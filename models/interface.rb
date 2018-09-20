@@ -1,4 +1,5 @@
 class Interface
+
   def gamer_turn_choice
     puts 'You turn: '
     puts '1: Pass'
@@ -24,7 +25,7 @@ class Interface
   end
 
   def play_message(name)
-    puts "Let's play, #{name}!"
+    puts "Let's play, #{name.capitalize}!"
   end
 
   def game_next_message
@@ -43,7 +44,59 @@ class Interface
     puts "Draw! You have $#{bank}"
   end
 
-  def next_set_choice
+  def next_set_message
     puts "Play next? ('y' - yes, 'n' - no)"
   end
+
+  def next?
+    choice = gets.chomp
+    if choice == 'y'
+      true
+    elsif choice == 'n'
+      false
+    else
+      puts "Error! You must enter 'y' or 'n'!"
+    end
+  end
+
+  def gamer_empty_bank
+    puts "Your bank is empty!"
+  end
+
+  def dealer_empty_bank
+    puts "Dealer bank is empty!"
+  end
+
+  def dealer_pass_message
+    puts "Dealer pass!"
+  end
+
+  def dealer_take_message
+    puts "Dealer take card!"
+  end
+
+  def gamer_take_message
+    puts "You take card!"
+  end
+
+  def result_message
+    puts "Result:"
+  end
+
+  def show_gamer(hand, score)
+    print "You: "
+    hand.each { |card| print "#{card.face}-#{card.suit}, " }
+    print "#{score} points\n"
+  end
+
+  def show_dealer(show = false, hand, score)
+    if show == false
+      puts "Dealer: '**', '**' points"
+    else
+      print "Dealer: "
+      hand.each { |card| print "#{card.face}-#{card.suit}, " }
+      print "#{score} points\n"
+    end
+  end
+
 end

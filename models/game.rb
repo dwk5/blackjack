@@ -1,82 +1,89 @@
 require_relative 'deck'
 require_relative 'hand'
 require_relative 'interface'
+require_relative 'card'
+require_relative 'player'
 
 class Game
 
-  BET_VALUE = 10
+  BET_VALUE = 10.freeze
 
+  attr_reader :gamer_hand, :dealer_hand
   def initialize(name)
+    @interface = Interface.new
     @gamer = Player.new(name)
-    @dealer = Dealer.new
+    @dealer = Player.new
     @deck = Deck.new
     @gamer_hand = Hand.new
     @dealer_hand = Hand.new
-    @interface = Interface.new
   end
 
   def set
     loop do
-      @bank_set = @gamer.bet(BET_VALUE) + @dealer.bet(BET_VALUE)
       start
-      print_info
       gamer_turn
-      @interface.next_set_choice
-      choice = gets.chomp
-      break unless choice == 'y'
+      @interface.next_set_message
+      break if @interface.next? == false
     end
   end
 
   protected
 
-  def print_info(show_dealer = false)
-    puts "You: #{@gamer_hand.show_cards(:visible)}, #{@gamer_hand.score} points"
-    puts "Dealer : #{@dealer_hand.show_cards(show_dealer)},\
-    #{show_dealer ? @dealer_hand.score : '**'} points"
-  end
-
   def gamer_turn
-      @interface.gamer_turn_choice
-      loop do
-        choice = gets.to_i
-        case choice
-        when 1
-          dealer_turn
-          break
-        when 2
-          if @gamer_hand.size == 3 || @dealer_hand.size == 3
-            result
-          else
-            @gamer_hand.add_card(@deck.take_card)
-            dealer_turn
-          end
-          break
-        when 3
-          break
-        else
-          @interface.error_message
-        end
+    @interface.gamer_turn_choice
+    loop do
+      choice = gets.to_i
+      case choice
+      when 1
+        dealer_turn
+        break
+      when 2
+        @gamer_hand.add_card(@deck.take_card)
+        @interface.gamer_take_message
+        @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
+        dealer_turn
+        break
+      when 3
+        result
+        break
+      else
+        @interface.error_message
       end
-      result
+    end
   end
 
   def dealer_turn
-    if @dealer_hand.score < 17
+    if @dealer_hand.score < 17 && @gamer_hand.size == 3
       @dealer_hand.add_card(@deck.take_card)
-    else
+      @interface.dealer_take_message
+      result
+    elsif @dealer_hand.score < 17 && @gamer_hand.size < 3
+      @dealer_hand.add_card(@deck.take_card)
+      @interface.dealer_take_message
       gamer_turn
+    elsif  @dealer_hand.score > 17 && @gamer_hand.size < 3
+      @interface.dealer_pass_message
+      gamer_turn
+    elsif  @dealer_hand.score > 17 && @gamer_hand.size == 3
+      @interface.dealer_pass_message
+      result
     end
   end
 
   def start
+    bet_set
     2.times do
       @gamer_hand.add_card(@deck.take_card)
       @dealer_hand.add_card(@deck.take_card)
     end
+    @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
+    @interface.show_dealer(show = false, @dealer_hand.hand, @dealer_hand.score)
   end
 
   def result
-    show_score
+    @interface.result_message
+    @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
+    @interface.show_dealer(:show, @dealer_hand.hand, @dealer_hand.score)
     if  @gamer_hand.score == @dealer_hand.score
       result_draw
     elsif @gamer_hand.score == 21
@@ -91,12 +98,6 @@ class Game
       dealer_win
     end
     hand_clear
-  end
-
-  def show_score
-    print_info(:show_dealer)
-    @gamer_hand.score
-    @dealer_hand.score
   end
 
   def hand_clear
@@ -128,5 +129,16 @@ class Game
   def dealer_win
     @dealer.add_prize(BET_VALUE*2)
     @interface.dealer_win_message(@gamer.bank)
+  end
+
+  def bet_set
+    if @gamer.bank.zero?
+      @interface.gamer_empty_bank
+    elsif @dealer.bank.zero?
+      @interface.dealer_empty_bank
+    else
+      @gamer.bet(BET_VALUE)
+      @dealer.bet(BET_VALUE)
+    end
   end
 end

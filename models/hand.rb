@@ -1,4 +1,5 @@
 class Hand
+attr_reader :hand
 
   def initialize
     @hand = []
@@ -6,12 +7,7 @@ class Hand
   end
 
   def add_card(card)
-    @hand << card
-  end
-
-  def show_cards(visible = false)
-    card_visible = visible ? :display_cards : :hidden
-    @hand.map(&card_visible).join(' ')
+    @hand.push(card)
   end
 
   def score

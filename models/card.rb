@@ -1,8 +1,7 @@
 class Card
-HIDDEN_FACE = '**'
-PICTURE = [:K, :Q, :J]
+PICTURE = [:K, :Q, :J].freeze
 ACE = :A
-
+attr_reader :face, :suit
   def initialize(face, suit)
     @face = face
     @suit = suit
@@ -13,13 +12,5 @@ ACE = :A
     return 11 if @face == ACE
     return 10 if PICTURE.include?(@face)
     @face
-  end
-
-  def display_cards
-    "#{@face}-#{@suit}"
-  end
-
-  def hidden
-    HIDDEN_FACE
   end
 end

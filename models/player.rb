@@ -5,18 +5,15 @@ class Player
   attr_reader :name, :bank
   validate :name, :presence
   validate :name, :format, /^[a-zA-Z]+$/i
-  def initialize(name)
+
+  def initialize(name = "Dealer")
     @name = name
     @bank = 100
     validate!
   end
 
   def bet(value)
-    if @bank.zero?
-      puts "No money in your bank!"
-    else
-      @bank -= value
-    end
+    @bank -= value
   end
 
   def add_prize(amount)
