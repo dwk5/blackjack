@@ -100,10 +100,6 @@ class Interface
     print "You: "
   end
 
-  def display_card(card)
-    "#{card.face}-#{card.suit}, "
-  end
-
   def get_name_from_user
     gets.chomp
   end
