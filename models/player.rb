@@ -7,7 +7,7 @@ class Player
   validate :name, :format, /^[a-zA-Z]+$/i
 
   def initialize(name = "Dealer")
-    @name = name
+    @name = name.capitalize
     @bank = 100
     validate!
   end

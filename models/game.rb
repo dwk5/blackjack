@@ -23,7 +23,7 @@ class Game
       start
       gamer_turn
       @interface.next_set_message
-      break if @interface.next? == false
+      break if @interface.next_round? == false
     end
   end
 
@@ -32,7 +32,7 @@ class Game
   def gamer_turn
     @interface.gamer_turn_choice
     loop do
-      choice = gets.to_i
+      choice = @interface.get_choice
       case choice
       when 1
         dealer_turn
@@ -40,7 +40,8 @@ class Game
       when 2
         @gamer_hand.add_card(@deck.take_card)
         @interface.gamer_take_message
-        @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
+        @interface.gamer_output
+        @interface.show_hand(@gamer_hand, true)
         dealer_turn
         break
       when 3
@@ -76,14 +77,18 @@ class Game
       @gamer_hand.add_card(@deck.take_card)
       @dealer_hand.add_card(@deck.take_card)
     end
-    @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
-    @interface.show_dealer(show = false, @dealer_hand.hand, @dealer_hand.score)
+    @interface.gamer_output
+    @interface.show_hand(@gamer_hand, true)
+    @interface.dealer_output
+    @interface.show_hand(@dealer_hand, false)
   end
 
   def result
     @interface.result_message
-    @interface.show_gamer(@gamer_hand.hand, @gamer_hand.score)
-    @interface.show_dealer(:show, @dealer_hand.hand, @dealer_hand.score)
+    @interface.gamer_output
+    @interface.show_hand(@gamer_hand, true)
+    @interface.dealer_output
+    @interface.show_hand(@dealer_hand, true)
     if  @gamer_hand.score == @dealer_hand.score
       result_draw
     elsif @gamer_hand.score == 21

@@ -8,7 +8,7 @@ require_relative 'models/validation'
 class Main
   @interface = Interface.new
   @interface.welcome_message
-  name = gets.chomp
+  name = @interface.get_name_from_user
   @interface.play_message(name)
   Game.new(name).set
 end

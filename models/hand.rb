@@ -1,18 +1,18 @@
 class Hand
-attr_reader :hand
+attr_reader :cards
 
   def initialize
-    @hand = []
+    @cards = []
     @hand_value = 0
   end
 
   def add_card(card)
-    @hand.push(card)
+    @cards.push(card)
   end
 
   def score
-    ace_count = @hand.count { |card| card.rank == 11 }
-    @hand_value = @hand.inject(0) { |sum, card| sum + card.rank}
+    ace_count = @cards.count { |card| card.rank == 11 }
+    @hand_value = @cards.inject(0) { |sum, card| sum + card.rank}
     while @hand_value > 21 && ace_count > 0
       @hand_value -= 10
     end
@@ -20,10 +20,10 @@ attr_reader :hand
   end
 
   def size
-    @hand.length
+    @cards.length
   end
 
   def clear
-    @hand.clear
+    @cards.clear
   end
 end

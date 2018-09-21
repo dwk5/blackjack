@@ -5,21 +5,21 @@ class Deck
   FACES  = [2, 3, 4, 5, 6, 7, 8, 9, 10, :J, :Q, :K, :A].freeze
 
   def initialize
-    @deck = []
+    @cards = []
     create_deck
-    @deck.shuffle!
+    @cards.shuffle!
   end
 
   def create_deck
     SUITS.each do |suit|
       FACES.each do |face|
-        @deck << Card.new(face, suit)
+        @cards << Card.new(face, suit)
       end
     end
   end
 
   def take_card
-    @deck.pop
+    @cards.pop
   end
 
 end

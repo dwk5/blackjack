@@ -48,7 +48,7 @@ class Interface
     puts "Play next? ('y' - yes, 'n' - no)"
   end
 
-  def next?
+  def next_round?
     choice = gets.chomp
     if choice == 'y'
       true
@@ -83,20 +83,32 @@ class Interface
     puts "Result:"
   end
 
-  def show_gamer(hand, score)
+  def show_hand(hand, visible = false)
+      if visible
+        hand.cards.each { |card| print "#{card.face}-#{card.suit}, " }
+        print "#{hand.score}points\n"
+      else
+        print "'**', '**' points\n"
+      end
+  end
+
+  def dealer_output
+    print "Dealer: "
+  end
+
+  def gamer_output
     print "You: "
-    hand.each { |card| print "#{card.face}-#{card.suit}, " }
-    print "#{score} points\n"
   end
 
-  def show_dealer(show = false, hand, score)
-    if show == false
-      puts "Dealer: '**', '**' points"
-    else
-      print "Dealer: "
-      hand.each { |card| print "#{card.face}-#{card.suit}, " }
-      print "#{score} points\n"
-    end
+  def display_card(card)
+    "#{card.face}-#{card.suit}, "
   end
 
+  def get_name_from_user
+    gets.chomp
+  end
+
+  def get_choice
+    gets.to_i
+  end
 end
