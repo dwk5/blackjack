@@ -1,7 +1,7 @@
 class Card
-PICTURE = [:K, :Q, :J].freeze
-ACE = :A
-attr_reader :face, :suit
+  PICTURE = [:K, :Q, :J].freeze
+  ACE = :A
+  attr_reader :face, :suit
   def initialize(face, suit)
     @face = face
     @suit = suit

@@ -3,19 +3,20 @@ require_relative 'hand'
 require_relative 'interface'
 require_relative 'card'
 require_relative 'player'
+require_relative 'gamer'
+require_relative 'dealer'
 
 class Game
-
-  BET_VALUE = 10.freeze
 
   attr_reader :gamer_hand, :dealer_hand
   def initialize(name)
     @interface = Interface.new
-    @gamer = Player.new(name)
-    @dealer = Player.new
+    @gamer = Gamer.new(name)
+    @dealer = Dealer.new
     @deck = Deck.new
     @gamer_hand = Hand.new
     @dealer_hand = Hand.new
+    @bank = Bank.new
   end
 
   def set
@@ -111,28 +112,27 @@ class Game
   end
 
   def result_draw
-    @gamer.add_prize(BET_VALUE)
-    @dealer.add_prize(BET_VALUE)
+    @bank.draw(@gamer, @dealer)
     @interface.draw_message(@gamer.bank)
   end
 
   def result_gamer_blackjack
-    @gamer.add_prize(BET_VALUE*2)
+    @bank.win_gamer(@gamer)
     @interface.gamer_blackjack_message(@gamer.bank)
   end
 
   def result_dealer_blackjack
-    @dealer.add_prize(BET_VALUE*2)
+    @bank.win_dealer(@dealer)
     @interface.dealer_blackjack_message(@gamer.bank)
   end
 
   def gamer_win
-    @gamer.add_prize(BET_VALUE*2)
+    @bank.win_gamer(@gamer)
     @interface.win_message(@gamer.bank)
   end
 
   def dealer_win
-    @dealer.add_prize(BET_VALUE*2)
+    @bank.win_dealer(@dealer)
     @interface.dealer_win_message(@gamer.bank)
   end
 
@@ -142,8 +142,7 @@ class Game
     elsif @dealer.bank.zero?
       @interface.dealer_empty_bank
     else
-      @gamer.bet(BET_VALUE)
-      @dealer.bet(BET_VALUE)
+      @bank.bet_round(@gamer, @dealer)
     end
   end
 end

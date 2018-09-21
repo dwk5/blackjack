@@ -86,7 +86,7 @@ class Interface
   def show_hand(hand, visible = false)
       if visible
         hand.cards.each { |card| print "#{card.face}-#{card.suit}, " }
-        print "#{hand.score}points\n"
+        print "#{hand.score} points\n"
       else
         print "'**', '**' points\n"
       end
